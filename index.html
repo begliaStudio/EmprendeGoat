@@ -181,8 +181,8 @@ function capybaraSVG(reactionClass){
 async function loadUserState(email){
   const key = STORAGE_PREFIX + email;
   try{
-    const res = await window.storage.get(key, true);
-    return res ? JSON.parse(res.value) : { idea:null, streak:0, missions:[] };
+    const val = localStorage.getItem(key);
+    return val ? JSON.parse(val) : { idea:null, streak:0, missions:[] };
   }catch(e){
     return { idea:null, streak:0, missions:[] };
   }
@@ -191,7 +191,7 @@ async function loadUserState(email){
 async function saveState(){
   if(!currentEmail) return;
   try{
-    await window.storage.set(STORAGE_PREFIX + currentEmail, JSON.stringify(state), true);
+    localStorage.setItem(STORAGE_PREFIX + currentEmail, JSON.stringify(state));
   }catch(e){ console.error('No se pudo guardar', e); }
 }
 
@@ -287,7 +287,7 @@ async function loginWithEmail(){
   const val = document.getElementById('email-input').value.trim().toLowerCase();
   if(!val || !val.includes('@')){ showError('Ingresá un correo válido.'); return; }
   setBusy(true);
-  try{ await window.storage.set(LAST_EMAIL_KEY, val, false); }catch(e){ localStorage.setItem(LAST_EMAIL_KEY, val); }
+  localStorage.setItem(LAST_EMAIL_KEY, val);
   currentEmail = val;
   state = await loadUserState(val);
   setBusy(false);
@@ -389,13 +389,7 @@ function render(){
 
 async function boot(){
   document.getElementById('content').innerHTML = '<p class="loading mono">Cargando...</p>';
-  let prefill = '';
-  try{
-    const r = await window.storage.get(LAST_EMAIL_KEY, false);
-    if(r && r.value) prefill = r.value;
-  }catch(e){
-    prefill = localStorage.getItem(LAST_EMAIL_KEY) || '';
-  }
+  let prefill = localStorage.getItem(LAST_EMAIL_KEY) || '';
   render();
   if(prefill){
     const emailInput = document.getElementById('email-input');

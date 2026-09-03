@@ -277,6 +277,7 @@ function showError(msg){
 async function startOnboarding(){
   const val = document.getElementById('idea-input').value.trim();
   if(!val) return;
+  if(!state) state = { idea: null, streak: 0, missions: [] };
   state.idea = val;
   await saveState();
   render();
@@ -290,9 +291,11 @@ async function loginWithEmail(){
   localStorage.setItem(LAST_EMAIL_KEY, val);
   currentEmail = val;
   state = await loadUserState(val);
+  if(!state) state = { idea: null, streak: 0, missions: [] };
   setBusy(false);
   render();
 }
+
 
 function fmtDate(ts){
   return new Date(ts).toLocaleDateString('es', { day:'2-digit', month:'short' });

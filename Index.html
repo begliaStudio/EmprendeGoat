@@ -216,6 +216,18 @@ async function callAI(systemPrompt, userPrompt){
   }
 }
 
+
+  const data = await response.json();
+  if(data.error) throw new Error(data.error);
+  
+  if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+    const text = data.candidates[0].content.parts[0].text;
+    return JSON.parse(text);
+  } else {
+    throw new Error("Respuesta inesperada del servidor proxy");
+  }
+}
+
 const COACH_SYSTEM = `Eres un entrenador de negocios exigente pero justo, hablando en español latino directo, sin rodeos.
 Tu trabajo es dar UNA misión concreta, pequeña y accionable en 2-5 días a un emprendedor, basada en su negocio y su historial.
 Nunca des consejos genéricos ("haz marketing", "valida tu idea") — la misión debe ser una acción específica y verificable.

@@ -7,382 +7,399 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
---bg: #121210;
---panel: #1C1B17;
---panel-raised: #232219;
---line: #38362D;
---text: #EDEAE0;
---text-muted: #8C897C;
---accent: #FF5A36;
---ok: #C9D14E;
---fail: #8C4A3C;
---capy: #C08A5B;
---capy-dark: #8F6039;
-}
-*{ box-sizing: border-box; }
-html,body{
-margin:0; padding:0; background:var(--bg); color:var(--text);
-font-family:'Barlow', sans-serif; min-height:100vh;
-}
-.display{ font-family:'Barlow Condensed', sans-serif; font-weight:800; letter-spacing:0.01em; }
-.mono{ font-family:'IBM Plex Mono', monospace; }
-.app{ max-width:520px; margin:0 auto; padding:20px 18px 60px; }
+  :root{
+    --bg: #121210;
+    --panel: #1C1B17;
+    --panel-raised: #232219;
+    --line: #38362D;
+    --text: #EDEAE0;
+    --text-muted: #8C897C;
+    --accent: #FF5A36;
+    --ok: #C9D14E;
+    --fail: #8C4A3C;
+    --capy: #C08A5B;
+    --capy-dark: #8F6039;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0; background:var(--bg); color:var(--text);
+    font-family:'Barlow', sans-serif; min-height:100vh;
+  }
+  .display{ font-family:'Barlow Condensed', sans-serif; font-weight:800; letter-spacing:0.01em; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .app{ max-width:520px; margin:0 auto; padding:20px 18px 60px; }
 
-.masthead{
-display:flex; justify-content:space-between; align-items:baseline;
-border-bottom:2px solid var(--text); padding-bottom:10px; margin-bottom:20px;
-}
-.masthead h1{ font-size:26px; margin:0; text-transform:uppercase; }
-.masthead .tag{ font-size:11px; color:var(--text-muted); }
+  .masthead{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:2px solid var(--text); padding-bottom:10px; margin-bottom:20px;
+  }
+  .masthead h1{ font-size:26px; margin:0; text-transform:uppercase; }
+  .masthead .tag{ font-size:11px; color:var(--text-muted); }
 
-.setup{ display:flex; flex-direction:column; gap:14px; }
-.setup p{ color:var(--text-muted); line-height:1.5; font-size:15px; margin:0 0 4px; }
-textarea, input[type=email]{
-background:var(--panel); border:1px solid var(--line); color:var(--text);
-font-family:'Barlow', sans-serif; font-size:16px; padding:12px; border-radius:2px;
-}
-textarea{ min-height:100px; resize:vertical; }
-textarea:focus, input:focus{ outline:2px solid var(--accent); outline-offset:2px; }
+  .setup{ display:flex; flex-direction:column; gap:14px; }
+  .setup p{ color:var(--text-muted); line-height:1.5; font-size:15px; margin:0 0 4px; }
+  textarea, input[type=email]{
+    background:var(--panel); border:1px solid var(--line); color:var(--text);
+    font-family:'Barlow', sans-serif; font-size:16px; padding:12px; border-radius:2px;
+  }
+  textarea{ min-height:100px; resize:vertical; }
+  textarea:focus, input:focus{ outline:2px solid var(--accent); outline-offset:2px; }
 
-button{
-font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:16px;
-text-transform:uppercase; letter-spacing:0.03em; cursor:pointer; border-radius:2px;
-border:1px solid var(--line); background:var(--panel-raised); color:var(--text);
-padding:12px 16px;
-}
-button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-button.primary{ background:var(--accent); border-color:var(--accent); color:#1A0D08; }
-button.primary:disabled{ opacity:0.5; cursor:default; }
-button.ghost{ background:transparent; color:var(--text-muted); border-color:var(--line); font-size:13px; padding:8px 10px; }
-button.fail{ background:transparent; border-color:var(--fail); color:var(--fail); }
+  button{
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:16px;
+    text-transform:uppercase; letter-spacing:0.03em; cursor:pointer; border-radius:2px;
+    border:1px solid var(--line); background:var(--panel-raised); color:var(--text);
+    padding:12px 16px;
+  }
+  button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  button.primary{ background:var(--accent); border-color:var(--accent); color:#1A0D08; }
+  button.primary:disabled{ opacity:0.5; cursor:default; }
+  button.ghost{ background:transparent; color:var(--text-muted); border-color:var(--line); font-size:13px; padding:8px 10px; }
+  button.fail{ background:transparent; border-color:var(--fail); color:var(--fail); }
 
-.streakbar{
-display:flex; align-items:center; justify-content:space-between;
-background:var(--panel); border:1px solid var(--line); padding:10px 14px; margin-bottom:14px;
-}
-.streakbar .n{ font-family:'IBM Plex Mono'; font-size:20px; color:var(--ok); }
-.streakbar .label{ font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; }
-.streakbar .who{ font-size:11px; color:var(--text-muted); }
+  .streakbar{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--panel); border:1px solid var(--line); padding:10px 14px; margin-bottom:14px;
+  }
+  .streakbar .n{ font-family:'IBM Plex Mono'; font-size:20px; color:var(--ok); }
+  .streakbar .label{ font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; }
 
-.capy-stage{ display:flex; justify-content:center; margin: 4px 0 14px; }
-.capy-stage svg{ width:150px; height:150px; overflow:visible; }
-.arm{ transform-origin:118px 130px; transform:rotate(15deg); }
-.capybara.approve .arm{ animation: armUp .8s ease forwards; }
-.capybara.disapprove .arm{ animation: armDown .8s ease forwards; }
-@keyframes armUp{ 0%{transform:rotate(15deg)} 60%{transform:rotate(-155deg)} 100%{transform:rotate(-130deg)} }
-@keyframes armDown{ 0%{transform:rotate(15deg)} 60%{transform:rotate(85deg)} 100%{transform:rotate(65deg)} }
-.hand-neutral, .hand-up, .hand-down{ opacity:0; transition:opacity .15s; }
-.capybara:not(.approve):not(.disapprove) .hand-neutral{ opacity:1; }
-.capybara.approve .hand-up{ opacity:1; }
-.capybara.disapprove .hand-down{ opacity:1; }
-.head{ transform-origin:70px 124px; }
-.capybara.disapprove .head{ animation: shakeHead .5s ease-in-out 2; }
-.capybara.approve .head{ animation: nodHead .4s ease-in-out 2; }
-@keyframes shakeHead{ 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-16deg)} 75%{transform:rotate(16deg)} }
-@keyframes nodHead{ 0%,100%{transform:rotate(0deg) translateY(0)} 50%{transform:rotate(0deg) translateY(4px)} }
-.shirt-text{ font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:11px; fill:var(--accent); letter-spacing:0.04em; }
-.badge-text{ font-family:'IBM Plex Mono', monospace; font-size:5px; fill:var(--text-muted); }
+  .capy-stage{ display:flex; justify-content:center; margin: 4px 0 14px; }
+  .capy-stage svg{ width:150px; height:150px; overflow:visible; }
+  .arm{ transform-origin:118px 130px; transform:rotate(15deg); }
+  .capybara.approve .arm{ animation: armUp .8s ease forwards; }
+  .capybara.disapprove .arm{ animation: armDown .8s ease forwards; }
+  @keyframes armUp{ 0%{transform:rotate(15deg)} 60%{transform:rotate(-155deg)} 100%{transform:rotate(-130deg)} }
+  @keyframes armDown{ 0%{transform:rotate(15deg)} 60%{transform:rotate(85deg)} 100%{transform:rotate(65deg)} }
+  .hand-neutral, .hand-up, .hand-down{ opacity:0; transition:opacity .15s; }
+  .capybara:not(.approve):not(.disapprove) .hand-neutral{ opacity:1; }
+  .capybara.approve .hand-up{ opacity:1; }
+  .capybara.disapprove .hand-down{ opacity:1; }
+  .head{ transform-origin:70px 124px; }
+  .capybara.disapprove .head{ animation: shakeHead .5s ease-in-out 2; }
+  .capybara.approve .head{ animation: nodHead .4s ease-in-out 2; }
+  @keyframes shakeHead{ 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-16deg)} 75%{transform:rotate(16deg)} }
+  @keyframes nodHead{ 0%,100%{transform:rotate(0deg) translateY(0)} 50%{transform:rotate(0deg) translateY(4px)} }
+  .shirt-text{ font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:11px; fill:var(--accent); letter-spacing:0.04em; }
+  .badge-text{ font-family:'IBM Plex Mono', monospace; font-size:5px; fill:var(--text-muted); }
 
-.mission-card{
-border-left:4px solid var(--accent); background:var(--panel); padding:16px 16px 18px;
-margin-bottom:14px;
-}
-.mission-meta{ font-size:11px; color:var(--text-muted); margin-bottom:6px; display:flex; gap:10px; }
-.mission-title{ font-size:24px; line-height:1.15; margin:0 0 8px; }
-.mission-detail{ font-size:14.5px; color:var(--text-muted); line-height:1.5; margin:0 0 14px; }
-.mission-actions{ display:flex; gap:10px; }
+  .mission-card{
+    border-left:4px solid var(--accent); background:var(--panel); padding:16px 16px 18px;
+    margin-bottom:14px;
+  }
+  .mission-meta{ font-size:11px; color:var(--text-muted); margin-bottom:6px; display:flex; gap:10px; }
+  .mission-title{ font-size:24px; line-height:1.15; margin:0 0 8px; }
+  .mission-detail{ font-size:14.5px; color:var(--text-muted); line-height:1.5; margin:0 0 14px; }
+  .mission-actions{ display:flex; gap:10px; }
 
-.transmission{
-border:1px dashed var(--line); padding:12px 14px; margin:0 0 14px; background:var(--panel-raised);
-}
-.transmission .from{ font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
-.transmission p{ margin:0; font-size:15px; line-height:1.5; }
+  .transmission{
+    border:1px dashed var(--line); padding:12px 14px; margin:0 0 14px; background:var(--panel-raised);
+  }
+  .transmission .from{ font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+  .transmission p{ margin:0; font-size:15px; line-height:1.5; }
 
-.loading{ color:var(--text-muted); font-size:13px; font-family:'IBM Plex Mono'; }
+  .loading{ color:var(--text-muted); font-size:13px; font-family:'IBM Plex Mono'; }
 
-.log-section{ margin-top:30px; }
-.log-section h2{
-font-size:13px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted);
-border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:12px; font-weight:600;
-}
-.log-entry{
-display:flex; justify-content:space-between; gap:10px; padding:9px 0;
-border-bottom:1px solid var(--line); font-size:14px;
-}
-.log-entry .lt{ color:var(--text); }
-.log-entry .ld{ color:var(--text-muted); font-size:12px; }
-.status-done{ color:var(--ok); }
-.status-failed{ color:var(--fail); }
-.status-pending{ color:var(--accent); }
+  .log-section{ margin-top:30px; }
+  .log-section h2{
+    font-size:13px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted);
+    border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:12px; font-weight:600;
+  }
+  .log-entry{
+    display:flex; justify-content:space-between; gap:10px; padding:9px 0;
+    border-bottom:1px solid var(--line); font-size:14px;
+  }
+  .log-entry .lt{ color:var(--text); }
+  .log-entry .ld{ color:var(--text-muted); font-size:12px; }
+  .status-done{ color:var(--ok); }
+  .status-failed{ color:var(--fail); }
 
-.footer-row{ margin-top:24px; display:flex; justify-content:space-between; align-items:center; }
-.error-box{ border:1px solid var(--fail); color:var(--fail); padding:10px 12px; font-size:13px; margin-bottom:14px; }
+  .footer-row{ margin-top:24px; display:flex; justify-content:space-between; align-items:center; }
+  .error-box{ border:1px solid var(--fail); color:var(--fail); padding:10px 12px; font-size:13px; margin-bottom:14px; }
 </style>
 </head>
 <body>
 <div class="app" id="app">
-<div class="masthead">
-<h1 class="display">EmprendeGoat</h1>
-<span class="tag mono">tu carpincho no te suelta</span>
-</div>
-<div id="content"><p class="loading mono">Cargando...</p></div>
+  <div class="masthead">
+    <h1 class="display">EmprendeGoat</h1>
+    <span class="tag mono">tu carpincho no te suelta</span>
+  </div>
+  <div id="content"><p class="loading mono">Cargando...</p></div>
 </div>
 
 <script>
 const STORAGE_PREFIX = 'emprendegoat:user:';
 const LAST_EMAIL_KEY = 'emprendegoat-last-email';
+const GEMINI_API_KEY = "AQ.Ab8RN6KIkqRUzMAb0dBDu5WVSi-RUg0X3FsR7BZRf3Klzvmi2g";
 let currentEmail = null;
 let state = null;
 
 function uid(){ return Math.random().toString(36).slice(2,9); }
 
 function capybaraSVG(reactionClass){
-return &lt;svg class="capybara ${reactionClass}" viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="100" cy="152" rx="64" ry="42" fill="var(--capy)"/>
-<ellipse cx="100" cy="168" rx="46" ry="24" fill="#8A5F39" opacity="0.35"/>
-<g class="head">
-<ellipse cx="70" cy="98" rx="38" ry="34" fill="var(--capy)"/>
-<ellipse cx="70" cy="112" rx="24" ry="16" fill="#D9B98C"/>
-<circle cx="46" cy="70" r="10" fill="var(--capy-dark)"/>
-<circle cx="46" cy="70" r="5" fill="#5C3D22"/>
-<circle cx="92" cy="66" r="10" fill="var(--capy-dark)"/>
-<circle cx="92" cy="66" r="5" fill="#5C3D22"/>
-<ellipse cx="58" cy="112" rx="17" ry="11" fill="#C9A87A"/>
-<ellipse cx="52" cy="110" rx="3.5" ry="2.5" fill="#2A1B10"/>
-<path d="M78 90 q6 6 12 0" stroke="#2A1B10" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M46 118 q6 5 12 0" stroke="#5C3D22" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
-</g>
-<g class="arm">
-<rect x="114" y="98" width="17" height="46" rx="8.5" fill="var(--capy)"/>
-<g class="hand-neutral">
-<circle cx="122" cy="92" r="13" fill="var(--capy)"/>
-</g>
-<g class="hand-up">
-<circle cx="122" cy="92" r="13" fill="var(--capy)"/>
-<rect x="115" y="70" width="9" height="22" rx="4.5" fill="var(--capy)"/>
-</g>
-<g class="hand-down">
-<circle cx="122" cy="92" r="13" fill="var(--capy)"/>
-<rect x="115" y="92" width="9" height="22" rx="4.5" fill="var(--capy)"/>
-</g>
-</g>
-<path d="M 58 148 Q 100 128 142 148 L 138 190 Q 100 202 62 190 Z" fill="#EDEAE0"/>
-<path d="M 58 148 Q 100 128 142 148 L 138 156 Q 100 138 62 156 Z" fill="#DAD6C7"/>
-<circle cx="78" cy="172" r="9" fill="none" stroke="var(--capy-dark)" stroke-width="1.4"/>
-<text x="78" y="175" text-anchor="middle" class="badge-text">BEGLIA</text>
-<path id="shirtArc" d="M 66 190 Q 100 178 134 190" fill="none"/>
-<text class="shirt-text" text-anchor="middle">
-<textPath href="#shirtArc" startOffset="50%">EMPRENDEGOAT</textPath>
-</text>
-</svg>`;
+  return `
+  <svg class="capybara ${reactionClass}" viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="152" rx="64" ry="42" fill="var(--capy)"/>
+    <ellipse cx="100" cy="168" rx="46" ry="24" fill="#8A5F39" opacity="0.35"/>
+    <g class="head">
+      <ellipse cx="70" cy="98" rx="38" ry="34" fill="var(--capy)"/>
+      <ellipse cx="70" cy="112" rx="24" ry="16" fill="#D9B98C"/>
+      <circle cx="46" cy="70" r="10" fill="var(--capy-dark)"/>
+      <circle cx="46" cy="70" r="5" fill="#5C3D22"/>
+      <circle cx="92" cy="66" r="10" fill="var(--capy-dark)"/>
+      <circle cx="92" cy="66" r="5" fill="#5C3D22"/>
+      <ellipse cx="58" cy="112" rx="17" ry="11" fill="#C9A87A"/>
+      <ellipse cx="52" cy="110" rx="3.5" ry="2.5" fill="#2A1B10"/>
+      <path d="M78 90 q6 6 12 0" stroke="#2A1B10" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M46 118 q6 5 12 0" stroke="#5C3D22" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+    </g>
+    <g class="arm">
+      <rect x="114" y="98" width="17" height="46" rx="8.5" fill="var(--capy)"/>
+      <g class="hand-neutral">
+        <circle cx="122" cy="92" r="13" fill="var(--capy)"/>
+      </g>
+      <g class="hand-up">
+        <circle cx="122" cy="92" r="13" fill="var(--capy)"/>
+        <rect x="115" y="70" width="9" height="22" rx="4.5" fill="var(--capy)"/>
+      </g>
+      <g class="hand-down">
+        <circle cx="122" cy="92" r="13" fill="var(--capy)"/>
+        <rect x="115" y="92" width="9" height="22" rx="4.5" fill="var(--capy)"/>
+      </g>
+    </g>
+    <path d="M 58 148 Q 100 128 142 148 L 138 190 Q 100 202 62 190 Z" fill="#EDEAE0"/>
+    <path d="M 58 148 Q 100 128 142 148 L 138 156 Q 100 138 62 156 Z" fill="#DAD6C7"/>
+    <circle cx="78" cy="172" r="9" fill="none" stroke="var(--capy-dark)" stroke-width="1.4"/>
+    <text x="78" y="175" text-anchor="middle" class="badge-text">BEGLIA</text>
+    <path id="shirtArc" d="M 66 190 Q 100 178 134 190" fill="none"/>
+    <text class="shirt-text" text-anchor="middle">
+      <textPath href="#shirtArc" startOffset="50%">EMPRENDEGOAT</textPath>
+    </text>
+  </svg>`;
 }
 
 async function loadUserState(email){
-const key = STORAGE_PREFIX + email;
-try{
-const res = await window.storage.get(key, true);
-return res ? JSON.parse(res.value) : { idea:null, streak:0, missions:[] };
-}catch(e){
-return { idea:null, streak:0, missions:[] };
-}
+  const key = STORAGE_PREFIX + email;
+  try{
+    const res = await window.storage.get(key, true);
+    return res ? JSON.parse(res.value) : { idea:null, streak:0, missions:[] };
+  }catch(e){
+    return { idea:null, streak:0, missions:[] };
+  }
 }
 
 async function saveState(){
-if(!currentEmail) return;
-try{
-await window.storage.set(STORAGE_PREFIX + currentEmail, JSON.stringify(state), true);
-}catch(e){ console.error('No se pudo guardar', e); }
+  if(!currentEmail) return;
+  try{
+    await window.storage.set(STORAGE_PREFIX + currentEmail, JSON.stringify(state), true);
+  }catch(e){ console.error('No se pudo guardar', e); }
 }
 
 async function callAI(systemPrompt, userPrompt){
-const response = await fetch("https://api.anthropic.com/v1/messages", {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({
-model: "claude-sonnet-4-6",
-max_tokens: 1000,
-system: systemPrompt,
-messages: [{ role: "user", content: userPrompt }]
-})
-});
-const data = await response.json();
-const text = (data.content || []).map(b => b.text || '').join('\n');
-const clean = text.replace(/json|/g, '').trim();
-return JSON.parse(clean);
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+      generationConfig: { responseMimeType: "application/json" }
+    })
+  });
+
+  const data = await response.json();
+  if(data.error) throw new Error(data.error.message);
+  
+  const text = data.candidates[0].content.parts[0].text;
+  return JSON.parse(text);
 }
 
-const COACH_SYSTEM = Eres un entrenador de negocios exigente pero justo, hablando en español latino directo, sin rodeos. Tu trabajo es dar UNA misión concreta, pequeña y accionable en 2-5 días a un emprendedor, basada en su negocio y su historial. Nunca des consejos genéricos ("haz marketing", "valida tu idea") — la misión debe ser una acción específica y verificable. Responde SIEMPRE únicamente con JSON válido, sin texto antes ni después, con este formato exacto: {"title": "string corto tipo orden (máx 8 palabras)", "detail": "1-2 frases explicando exactamente qué hacer y cómo verificarlo", "days": number entre 2 y 5};
+const COACH_SYSTEM = `Eres un entrenador de negocios exigente pero justo, hablando en español latino directo, sin rodeos.
+Tu trabajo es dar UNA misión concreta, pequeña y accionable en 2-5 días a un emprendedor, basada en su negocio y su historial.
+Nunca des consejos genéricos ("haz marketing", "valida tu idea") — la misión debe ser una acción específica y verificable.
+Devuelve SIEMPRE un JSON válido con estas llaves exactas:
+{"title": "string corto tipo orden (máx 8 palabras)", "detail": "1-2 frases explicando exactamente qué hacer y cómo verificarlo", "days": número entero entre 2 y 5}`;
 
-const CHECKIN_SYSTEM = Eres el mismo entrenador exigente. El usuario acaba de reportar si cumplió o no una misión. Si CUMPLIÓ: reconoce el logro en una frase corta y directa, sin exagerar, y sube el nivel de exigencia sutilmente para la próxima. Si NO CUMPLIÓ: no lo regañes con culpa, pero sé directo, nombra la falta de acción, no aceptes excusas vagas, y exige un compromiso concreto más pequeño para las próximas 24-48h. Responde SIEMPRE únicamente con JSON válido, sin texto antes ni después: {"message": "2-3 frases en tono de entrenador, directo, en español"};
+const CHECKIN_SYSTEM = `Eres el mismo entrenador exigente. El usuario acaba de reportar si cumplió o no una misión.
+Si CUMPLIÓ: reconoce el logro en una frase corta y directa, sin exagerar, y sube el nivel de exigencia sutilmente para la próxima.
+Si NO CUMPLIÓ: sé directo, nombra la falta de acción, no aceptes excusas vagas, y exige un compromiso concreto más pequeño para las próximas 24-48h.
+Devuelve SIEMPRE un JSON válido con esta llave exacta:
+{"message": "2-3 frases en tono de entrenador, directo, en español"}`;
 
 async function generateMission(){
-setBusy(true);
-try{
-const history = state.missions.slice(-4).map(m => -${m.title} (latex
-{m.status})`).join('\n') || 'Sin historial aún.'; const userPrompt = `Negocio/idea del usuario: 
-
-{state.idea}\nRacha actual: latex
-{state.streak}\nÚltimas misiones:\n
-
-{history}\n\nGenera la próxima misión.`;
-const result = await callAI(COACH_SYSTEM, userPrompt);
-state.missions.push({
-id: uid(), title: result.title, detail: result.detail, days: result.days || 3,
-createdAt: Date.now(), status: 'pending', transmission: null
-});
-await saveState();
-}catch(e){
-showError('No se pudo generar la misión. Intenta de nuevo.');
-}
-setBusy(false);
-render();
+  setBusy(true);
+  try{
+    const history = state.missions.slice(-4).map(m => `- ${m.title} (${m.status})`).join('\n') || 'Sin historial aún.';
+    const userPrompt = `Negocio/idea del usuario: ${state.idea}\nRacha actual: ${state.streak}\nÚltimas misiones:\n${history}\n\nGenera la próxima misión.`;
+    const result = await callAI(COACH_SYSTEM, userPrompt);
+    state.missions.push({
+      id: uid(), title: result.title, detail: result.detail, days: result.days || 3,
+      createdAt: Date.now(), status: 'pending', transmission: null
+    });
+    await saveState();
+  }catch(e){
+    showError('Error con Gemini: ' + (e.message || 'Intenta de nuevo.'));
+  }
+  setBusy(false);
+  render();
 }
 
 async function checkIn(missionId, done){
-const mission = state.missions.find(m => m.id === missionId);
-if(!mission) return;
-setBusy(true);
-try{
-const userPrompt = Misión: "${mission.title}" — ${mission.detail}\nEl usuario reporta que ${done ? 'SÍ la cumplió' : 'NO la cumplió'}.\nRacha antes de este reporte: ${state.streak}.;
-const result = await callAI(CHECKIN_SYSTEM, userPrompt);
-mission.status = done ? 'done' : 'failed';
-mission.transmission = result.message;
-state.streak = done ? state.streak + 1 : 0;
-await saveState();
-render();
-await generateMission();
-}catch(e){
-showError('No se pudo procesar el reporte. Intenta de nuevo.');
-setBusy(false);
-}
+  const mission = state.missions.find(m => m.id === missionId);
+  if(!mission) return;
+  setBusy(true);
+  try{
+    const userPrompt = `Misión: "${mission.title}" — ${mission.detail}\nEl usuario reporta que ${done ? 'SÍ la cumplió' : 'NO la cumplió'}.\nRacha antes de este reporte: ${state.streak}.`;
+    const result = await callAI(CHECKIN_SYSTEM, userPrompt);
+    mission.status = done ? 'done' : 'failed';
+    mission.transmission = result.message;
+    state.streak = done ? state.streak + 1 : 0;
+    await saveState();
+    render();
+    await generateMission();
+  }catch(e){
+    showError('Error con Gemini: ' + (e.message || 'Intenta de nuevo.'));
+    setBusy(false);
+  }
 }
 
 function setBusy(isBusy){
-document.querySelectorAll('button').forEach(b => b.disabled = isBusy);
+  document.querySelectorAll('button').forEach(b => b.disabled = isBusy);
 }
 
 function showError(msg){
-const box = document.getElementById('error-box');
-if(box){ box.textContent = msg; box.style.display = 'block'; }
+  const box = document.getElementById('error-box');
+  if(box){ box.textContent = msg; box.style.display = 'block'; }
 }
 
 async function startOnboarding(){
-const val = document.getElementById('idea-input').value.trim();
-if(!val) return;
-state.idea = val;
-await saveState();
-render();
-await generateMission();
-}
-
-async function resetAll(){
-if(!confirm('Esto borra el progreso, racha e historial de esta cuenta. ¿Continuar?')) return;
-state = { idea:null, streak:0, missions:[] };
-await saveState();
-render();
-}
-
-function switchAccount(){
-currentEmail = null;
-state = null;
-boot();
+  const val = document.getElementById('idea-input').value.trim();
+  if(!val) return;
+  state.idea = val;
+  await saveState();
+  render();
+  await generateMission();
 }
 
 async function loginWithEmail(){
-const val = document.getElementById('email-input').value.trim().toLowerCase();
-if(!val || !val.includes('@')){ showError('Ingresá un correo válido.'); return; }
-setBusy(true);
-try{ await window.storage.set(LAST_EMAIL_KEY, val, false); }catch(e){}
-currentEmail = val;
-state = await loadUserState(val);
-setBusy(false);
-render();
+  const val = document.getElementById('email-input').value.trim().toLowerCase();
+  if(!val || !val.includes('@')){ showError('Ingresá un correo válido.'); return; }
+  setBusy(true);
+  try{ await window.storage.set(LAST_EMAIL_KEY, val, false); }catch(e){ localStorage.setItem(LAST_EMAIL_KEY, val); }
+  currentEmail = val;
+  state = await loadUserState(val);
+  setBusy(false);
+  render();
 }
 
 function fmtDate(ts){
-return new Date(ts).toLocaleDateString('es', { day:'2-digit', month:'short' });
+  return new Date(ts).toLocaleDateString('es', { day:'2-digit', month:'short' });
 }
 
 function render(){
-const el = document.getElementById('content');
+  const el = document.getElementById('content');
 
-if(!currentEmail){
-el.innerHTML = &lt;div class="capy-stage"&gt;${capybaraSVG('')}</div>
-<div class="setup">
-<p>Ingresá tu correo para guardar tu progreso y volver a encontrarlo la próxima vez que entres.</p>
-<input id="email-input" type="email" placeholder="tucorreo@ejemplo.com"/>
-<button class="primary" onclick="loginWithEmail()">Continuar</button>
-<div id="error-box" class="error-box" style="display:none;"></div>
-</div>
-`;
-return;
-}
+  if(!currentEmail){
+    el.innerHTML = `
+      <div class="capy-stage">${capybaraSVG('')}</div>
+      <div class="setup">
+        <p>Ingresá tu correo para guardar tu progreso con tu carpincho coach.</p>
+        <input id="email-input" type="email" placeholder="tucorreo@ejemplo.com"/>
+        <button class="primary" onclick="loginWithEmail()">Continuar</button>
+        <div id="error-box" class="error-box" style="display:none;"></div>
+      </div>
+    `;
+    return;
+  }
 
-if(!state.idea){
-el.innerHTML = &lt;div class="capy-stage"&gt;${capybaraSVG('')}</div>
-<div class="setup">
-<p>Contame en 2-3 frases en qué negocio o idea estás trabajando. Con eso te voy a asignar tu primera misión, pequeña, concreta, y con fecha límite.</p>
-<textarea id="idea-input" placeholder="Ej: Quiero vender velas aromáticas hechas a mano, todavía no tengo clientes ni redes sociales activas..."></textarea>
-<button class="primary" onclick="startOnboarding()">Empezar</button>
-<div id="error-box" class="error-box" style="display:none;"></div>
-</div>
-`;
-return;
-}
+  if(!state.idea){
+    el.innerHTML = `
+      <div class="capy-stage">${capybaraSVG('')}</div>
+      <div class="setup">
+        <p>Contame en 2-3 frases en qué negocio o idea estás trabajando. Con eso te voy a asignar tu primera misión, pequeña, concreta, y con fecha límite.</p>
+        <textarea id="idea-input" placeholder="Ej: Quiero vender velas aromáticas hechas a mano, todavía no tengo clientes ni redes sociales activas..."></textarea>
+        <button class="primary" onclick="startOnboarding()">Empezar</button>
+        <div id="error-box" class="error-box" style="display:none;"></div>
+      </div>
+    `;
+    return;
+  }
 
-const pending = [...state.missions].reverse().find(m => m.status === 'pending');
-const history = [...state.missions].reverse().filter(m => m !== pending);
-const lastResolved = [...state.missions].reverse().find(m => m.status !== 'pending' && m.transmission);
-const reactionClass = lastResolved ? (lastResolved.status === 'done' ? 'approve' : 'disapprove') : '';
+  const pending = [...state.missions].reverse().find(m => m.status === 'pending');
+  const history = [...state.missions].reverse().filter(m => m !== pending);
+  const lastResolved = [...state.missions].reverse().find(m => m.status !== 'pending' && m.transmission);
+  const reactionClass = lastResolved ? (lastResolved.status === 'done' ? 'approve' : 'disapprove') : '';
 
-let html = &lt;div class="streakbar"&gt; &lt;span class="label mono"&gt;${currentEmail}</span>
-<span class="n">${state.streak} 🔥&lt;/span&gt; &lt;/div&gt; &lt;div id="error-box" class="error-box" style="display:none;"&gt;&lt;/div&gt; &lt;div class="capy-stage"&gt;${capybaraSVG(reactionClass)}</div>
-`;
+  let html = `
+    <div class="streakbar">
+      <span class="label mono">${currentEmail}</span>
+      <span class="n">${state.streak} 🔥</span>
+    </div>
+    <div id="error-box" class="error-box" style="display:none;"></div>
+    <div class="capy-stage">${capybaraSVG(reactionClass)}</div>
+  `;
 
-if(lastResolved && lastResolved.transmission){
-html += &lt;div class="transmission"&gt; &lt;div class="from mono"&gt;Transmisión del coach&lt;/div&gt; &lt;p&gt;${lastResolved.transmission}</p>
-</div>
-`;
-}
+  if(lastResolved && lastResolved.transmission){
+    html += `
+      <div class="transmission">
+        <div class="from mono">Transmisión del coach</div>
+        <p>${lastResolved.transmission}</p>
+      </div>
+    `;
+  }
 
-if(pending){
-html += &lt;div class="mission-card"&gt; &lt;div class="mission-meta mono"&gt; &lt;span&gt;MISIÓN #${state.missions.indexOf(pending) + 1}</span>
-<span>PLAZO ${pending.days}D&lt;/span&gt; &lt;/div&gt; &lt;p class="mission-title display"&gt;${pending.title}</p>
-<p class="mission-detail">${pending.detail}&lt;/p&gt; &lt;div class="mission-actions"&gt; &lt;button class="primary" onclick="checkIn('${pending.id}', true)">Cumplida</button>
-<button class="fail" onclick="checkIn('${pending.id}', false)"&gt;No la cumplí&lt;/button&gt; &lt;/div&gt; &lt;/div&gt;;
-} else {
-html += <p class="loading mono"&gt;Generando misión...&lt;/p>;
-}
+  if(pending){
+    html += `
+      <div class="mission-card">
+        <div class="mission-meta mono">
+          <span>MISIÓN #${state.missions.indexOf(pending) + 1}</span>
+          <span>PLAZO ${pending.days}D</span>
+        </div>
+        <p class="mission-title display">${pending.title}</p>
+        <p class="mission-detail">${pending.detail}</p>
+        <div class="mission-actions">
+          <button class="primary" onclick="checkIn('${pending.id}', true)">Cumplida</button>
+          <button class="fail" onclick="checkIn('${pending.id}', false)">No la cumplí</button>
+        </div>
+      </div>
+    `;
+  } else {
+    html += `<p class="loading mono">Generando misión...</p>`;
+  }
 
-if(history.length){
-html += <div class="log-section"&gt;&lt;h2 class="mono"&gt;Registro&lt;/h2>;
-history.forEach(m => {
-const statusClass = m.status === 'done' ? 'status-done' : m.status === 'failed' ? 'status-failed' : 'status-pending';
-const statusLabel = m.status === 'done' ? 'Cumplida' : m.status === 'failed' ? 'Fallida' : 'Pendiente';
-html += &lt;div class="log-entry"&gt; &lt;span class="lt"&gt;${m.title}</span>
-<span class="ld mono ${statusClass}"&gt;${statusLabel} · ${fmtDate(m.createdAt)}&lt;/span&gt; &lt;/div&gt;;
-});
-html += </div>;
-}
+  if(history.length){
+    html += `<div class="log-section"><h2 class="mono">Registro</h2>`;
+    history.forEach(m => {
+      const statusClass = m.status === 'done' ? 'status-done' : 'status-failed';
+      const statusLabel = m.status === 'done' ? 'Cumplida' : 'Fallida';
+      html += `
+        <div class="log-entry">
+          <span class="lt">${m.title}</span>
+          <span class="ld mono ${statusClass}">${statusLabel} · ${fmtDate(m.createdAt)}</span>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
 
-html += &lt;div class="footer-row"&gt; &lt;button class="ghost" onclick="resetAll()"&gt;Reiniciar progreso&lt;/button&gt; &lt;button class="ghost" onclick="switchAccount()"&gt;Cambiar cuenta&lt;/button&gt; &lt;/div&gt;;
-
-el.innerHTML = html;
+  el.innerHTML = html;
 }
 
 async function boot(){
-document.getElementById('content').innerHTML = '<p class="loading mono">Cargando...</p>';
-let prefill = '';
-try{
-const r = await window.storage.get(LAST_EMAIL_KEY, false);
-if(r && r.value) prefill = r.value;
-}catch(e){}
-render();
-if(prefill){
-const emailInput = document.getElementById('email-input');
-if(emailInput) emailInput.value = prefill;
-}
+  document.getElementById('content').innerHTML = '<p class="loading mono">Cargando...</p>';
+  let prefill = '';
+  try{
+    const r = await window.storage.get(LAST_EMAIL_KEY, false);
+    if(r && r.value) prefill = r.value;
+  }catch(e){
+    prefill = localStorage.getItem(LAST_EMAIL_KEY) || '';
+  }
+  render();
+  if(prefill){
+    const emailInput = document.getElementById('email-input');
+    if(emailInput) emailInput.value = prefill;
+  }
 }
 
 boot();

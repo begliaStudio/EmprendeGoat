@@ -130,7 +130,7 @@
 <script>
 const STORAGE_PREFIX = 'emprendegoat:user:';
 const LAST_EMAIL_KEY = 'emprendegoat-last-email';
-const GEMINI_API_KEY = "AQ.Ab8RN6J4cQL2oW3TNrMSycjT6torg1yIFtsKbeGt5LUB8Vx6gA";
+const PROXY_URL = 'https://square-bar-16c4.francoeduardofracuelli.workers.dev/';
 let currentEmail = null;
 let state = null;
 
@@ -181,8 +181,8 @@ function capybaraSVG(reactionClass){
 async function loadUserState(email){
   const key = STORAGE_PREFIX + email;
   try{
-    const val = localStorage.getItem(key);
-    return val ? JSON.parse(val) : { idea:null, streak:0, missions:[] };
+    const res = await window.storage.get(key, true);
+    return res ? JSON.parse(res.value) : { idea:null, streak:0, missions:[] };
   }catch(e){
     return { idea:null, streak:0, missions:[] };
   }
@@ -191,28 +191,29 @@ async function loadUserState(email){
 async function saveState(){
   if(!currentEmail) return;
   try{
-    localStorage.setItem(STORAGE_PREFIX + currentEmail, JSON.stringify(state));
+    await window.storage.set(STORAGE_PREFIX + currentEmail, JSON.stringify(state), true);
   }catch(e){ console.error('No se pudo guardar', e); }
 }
 
 async function callAI(systemPrompt, userPrompt){
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-  
-  const response = await fetch(url, {
+  const response = await fetch(PROXY_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      generationConfig: { responseMimeType: "application/json" }
+      systemPrompt: systemPrompt,
+      userPrompt: userPrompt
     })
   });
 
   const data = await response.json();
-  if(data.error) throw new Error(data.error.message);
+  if(data.error) throw new Error(data.error);
   
-  const text = data.candidates[0].content.parts[0].text;
-  return JSON.parse(text);
+  if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+    const text = data.candidates[0].content.parts[0].text;
+    return JSON.parse(text);
+  } else {
+    throw new Error("Respuesta inesperada del servidor proxy");
+  }
 }
 
 const COACH_SYSTEM = `Eres un entrenador de negocios exigente pero justo, hablando en español latino directo, sin rodeos.
@@ -286,7 +287,7 @@ async function loginWithEmail(){
   const val = document.getElementById('email-input').value.trim().toLowerCase();
   if(!val || !val.includes('@')){ showError('Ingresá un correo válido.'); return; }
   setBusy(true);
-  try{ localStorage.setItem(LAST_EMAIL_KEY, val); }catch(e){}
+  try{ await window.storage.set(LAST_EMAIL_KEY, val, false); }catch(e){ localStorage.setItem(LAST_EMAIL_KEY, val); }
   currentEmail = val;
   state = await loadUserState(val);
   setBusy(false);
@@ -390,8 +391,11 @@ async function boot(){
   document.getElementById('content').innerHTML = '<p class="loading mono">Cargando...</p>';
   let prefill = '';
   try{
+    const r = await window.storage.get(LAST_EMAIL_KEY, false);
+    if(r && r.value) prefill = r.value;
+  }catch(e){
     prefill = localStorage.getItem(LAST_EMAIL_KEY) || '';
-  }catch(e){}
+  }
   render();
   if(prefill){
     const emailInput = document.getElementById('email-input');

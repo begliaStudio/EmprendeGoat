@@ -1,0 +1,280 @@
+<script>
+const STORAGE_PREFIX = 'emprendegoat:user:';
+const LAST_EMAIL_KEY = 'emprendegoat-last-email';
+const PROXY_URL = 'https://square-bar-16c4.francoeduardofracuelli.workers.dev/';
+let currentEmail = null;
+let state = null;
+
+function uid(){ return Math.random().toString(36).slice(2,9); }
+
+function capybaraSVG(reactionClass){
+  return `
+  <svg class="capybara ${reactionClass}" viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="152" rx="64" ry="42" fill="var(--capy)"/>
+    <ellipse cx="100" cy="168" rx="46" ry="24" fill="#8A5F39" opacity="0.35"/>
+    <g class="head">
+      <ellipse cx="70" cy="98" rx="38" ry="34" fill="var(--capy)"/>
+      <ellipse cx="70" cy="112" rx="24" ry="16" fill="#D9B98C"/>
+      <circle cx="46" cy="70" r="10" fill="var(--capy-dark)"/>
+      <circle cx="46" cy="70" r="5" fill="#5C3D22"/>
+      <circle cx="92" cy="66" r="10" fill="var(--capy-dark)"/>
+      <circle cx="92" cy="66" r="5" fill="#5C3D22"/>
+      <ellipse cx="58" cy="112" rx="17" ry="11" fill="#C9A87A"/>
+      <ellipse cx="52" cy="110" rx="3.5" ry="2.5" fill="#2A1B10"/>
+      <path d="M78 90 q6 6 12 0" stroke="#2A1B10" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M46 118 q6 5 12 0" stroke="#5C3D22" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+    </g>
+    <g class="arm">
+      <rect x="114" y="98" width="17" height="46" rx="8.5" fill="var(--capy)"/>
+      <g class="hand-neutral">
+        <circle cx="122" cy="92" r="13" fill="var(--capy)"/>
+      </g>
+      <g class="hand-up">
+        <circle cx="122" cy="92" r="13" fill="var(--capy)"/>
+        <rect x="115" y="70" width="9" height="22" rx="4.5" fill="var(--capy)"/>
+      </g>
+      <g class="hand-down">
+        <circle cx="122" cy="92" r="13" fill="var(--capy)"/>
+        <rect x="115" y="92" width="9" height="22" rx="4.5" fill="var(--capy)"/>
+      </g>
+    </g>
+    <path d="M 58 148 Q 100 128 142 148 L 138 190 Q 100 202 62 190 Z" fill="#EDEAE0"/>
+    <path d="M 58 148 Q 100 128 142 148 L 138 156 Q 100 138 62 156 Z" fill="#DAD6C7"/>
+    <circle cx="78" cy="172" r="9" fill="none" stroke="var(--capy-dark)" stroke-width="1.4"/>
+    <text x="78" y="175" text-anchor="middle" class="badge-text">BEGLIA</text>
+    <path id="shirtArc" d="M 66 190 Q 100 178 134 190" fill="none"/>
+    <text class="shirt-text" text-anchor="middle">
+      <textPath href="#shirtArc" startOffset="50%">EMPRENDEGOAT</textPath>
+    </text>
+  </svg>`;
+}
+
+async function loadUserState(email){
+  const key = STORAGE_PREFIX + email;
+  try{
+    const val = localStorage.getItem(key);
+    return val ? JSON.parse(val) : { idea:null, streak:0, missions:[] };
+  }catch(e){
+    return { idea:null, streak:0, missions:[] };
+  }
+}
+
+async function saveState(){
+  if(!currentEmail) return;
+  try{
+    localStorage.setItem(STORAGE_PREFIX + currentEmail, JSON.stringify(state));
+  }catch(e){ console.error('No se pudo guardar', e); }
+}
+
+async function callAI(systemPrompt, userPrompt){
+  const response = await fetch(PROXY_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      systemPrompt: systemPrompt,
+      userPrompt: userPrompt
+    })
+  });
+
+  const data = await response.json();
+  if(data.error) throw new Error(data.error);
+
+  let rawText = "";
+  if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+    rawText = data.candidates[0].content.parts[0].text;
+  } else if (data.text) {
+    rawText = data.text;
+  } else {
+    throw new Error("Respuesta inesperada del servidor proxy");
+  }
+
+  // Limpiar bloques Markdown de código antes de parsear JSON
+  const cleanedText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+  return JSON.parse(cleanedText);
+}
+
+const COACH_SYSTEM = `Eres un entrenador de negocios exigente pero justo, hablando en español latino directo, sin rodeos.
+Tu trabajo es dar UNA misión concreta, pequeña y accionable en 2-5 días a un emprendedor, basada en su negocio y su historial.
+Nunca des consejos genéricos ("haz marketing", "valida tu idea") — la misión debe ser una acción específica y verificable.
+Devuelve SIEMPRE un JSON válido con estas llaves exactas:
+{"title": "string corto tipo orden (máx 8 palabras)", "detail": "1-2 frases explicando exactamente qué hacer y cómo verificarlo", "days": número entero entre 2 y 5}`;
+
+const CHECKIN_SYSTEM = `Eres el mismo entrenador exigente. El usuario acaba de reportar si cumplió o no una misión.
+Si CUMPLIÓ: reconoce el logro en una frase corta y directa, sin exagerar, y sube el nivel de exigencia sutilmente para la próxima.
+Si NO CUMPLIÓ: sé directo, nombra la falta de acción, no aceptes excusas vagas, y exige un compromiso concreto más pequeño para las próximas 24-48h.
+Devuelve SIEMPRE un JSON válido con esta llave exacta:
+{"message": "2-3 frases en tono de entrenador, directo, en español"}`;
+
+async function generateMission(){
+  setBusy(true);
+  try{
+    const history = state.missions.slice(-4).map(m => `- ${m.title} (${m.status})`).join('\n') || 'Sin historial aún.';
+    const userPrompt = `Negocio/idea del usuario: ${state.idea}\nRacha actual: ${state.streak}\nÚltimas misiones:\n${history}\n\nGenera la próxima misión.`;
+    const result = await callAI(COACH_SYSTEM, userPrompt);
+    state.missions.push({
+      id: uid(), title: result.title, detail: result.detail, days: result.days || 3,
+      createdAt: Date.now(), status: 'pending', transmission: null
+    });
+    await saveState();
+  }catch(e){
+    showError('Error con Gemini: ' + (e.message || 'Intenta de nuevo.'));
+  }
+  setBusy(false);
+  render();
+}
+
+async function checkIn(missionId, done){
+  const mission = state.missions.find(m => m.id === missionId);
+  if(!mission) return;
+  setBusy(true);
+  try{
+    const userPrompt = `Misión: "${mission.title}" — ${mission.detail}\nEl usuario reporta que ${done ? 'SÍ la cumplió' : 'NO la cumplió'}.\nRacha antes de este reporte: ${state.streak}.`;
+    const result = await callAI(CHECKIN_SYSTEM, userPrompt);
+    mission.status = done ? 'done' : 'failed';
+    mission.transmission = result.message;
+    state.streak = done ? state.streak + 1 : 0;
+    await saveState();
+    render();
+    await generateMission();
+  }catch(e){
+    showError('Error con Gemini: ' + (e.message || 'Intenta de nuevo.'));
+    setBusy(false);
+  }
+}
+
+function setBusy(isBusy){
+  document.querySelectorAll('button').forEach(b => b.disabled = isBusy);
+}
+
+function showError(msg){
+  const box = document.getElementById('error-box');
+  if(box){ box.textContent = msg; box.style.display = 'block'; }
+}
+
+async function startOnboarding(){
+  const val = document.getElementById('idea-input').value.trim();
+  if(!val) return;
+  if(!state) state = { idea: null, streak: 0, missions: [] };
+  state.idea = val;
+  await saveState();
+  render();
+  await generateMission();
+}
+
+async function loginWithEmail(){
+  const val = document.getElementById('email-input').value.trim().toLowerCase();
+  if(!val || !val.includes('@')){ showError('Ingresá un correo válido.'); return; }
+  setBusy(true);
+  localStorage.setItem(LAST_EMAIL_KEY, val);
+  currentEmail = val;
+  state = await loadUserState(val);
+  if(!state) state = { idea: null, streak: 0, missions: [] };
+  setBusy(false);
+  render();
+}
+
+function fmtDate(ts){
+  return new Date(ts).toLocaleDateString('es', { day:'2-digit', month:'short' });
+}
+
+function render(){
+  const el = document.getElementById('content');
+
+  if(!currentEmail){
+    el.innerHTML = `
+      <div class="capy-stage">${capybaraSVG('')}</div>
+      <div class="setup">
+        <p>Ingresá tu correo para guardar tu progreso con tu carpincho coach.</p>
+        <input id="email-input" type="email" placeholder="tucorreo@ejemplo.com"/>
+        <button class="primary" onclick="loginWithEmail()">Continuar</button>
+        <div id="error-box" class="error-box" style="display:none;"></div>
+      </div>
+    `;
+    return;
+  }
+
+  if(!state.idea){
+    el.innerHTML = `
+      <div class="capy-stage">${capybaraSVG('')}</div>
+      <div class="setup">
+        <p>Contame en 2-3 frases en qué negocio o idea estás trabajando. Con eso te voy a asignar tu primera misión, pequeña, concreta, y con fecha límite.</p>
+        <textarea id="idea-input" placeholder="Ej: Quiero vender velas aromáticas hechas a mano, todavía no tengo clientes ni redes sociales activas..."></textarea>
+        <button class="primary" onclick="startOnboarding()">Empezar</button>
+        <div id="error-box" class="error-box" style="display:none;"></div>
+      </div>
+    `;
+    return;
+  }
+
+  const pending = [...state.missions].reverse().find(m => m.status === 'pending');
+  const history = [...state.missions].reverse().filter(m => m !== pending);
+  const lastResolved = [...state.missions].reverse().find(m => m.status !== 'pending' && m.transmission);
+  const reactionClass = lastResolved ? (lastResolved.status === 'done' ? 'approve' : 'disapprove') : '';
+
+  let html = `
+    <div class="streakbar">
+      <span class="label mono">${currentEmail}</span>
+      <span class="n">${state.streak} 🔥</span>
+    </div>
+    <div id="error-box" class="error-box" style="display:none;"></div>
+    <div class="capy-stage">${capybaraSVG(reactionClass)}</div>
+  `;
+
+  if(lastResolved && lastResolved.transmission){
+    html += `
+      <div class="transmission">
+        <div class="from mono">Transmisión del coach</div>
+        <p>${lastResolved.transmission}</p>
+      </div>
+    `;
+  }
+
+  if(pending){
+    html += `
+      <div class="mission-card">
+        <div class="mission-meta mono">
+          <span>MISIÓN #${state.missions.indexOf(pending) + 1}</span>
+          <span>PLAZO ${pending.days}D</span>
+        </div>
+        <p class="mission-title display">${pending.title}</p>
+        <p class="mission-detail">${pending.detail}</p>
+        <div class="mission-actions">
+          <button class="primary" onclick="checkIn('${pending.id}', true)">Cumplida</button>
+          <button class="fail" onclick="checkIn('${pending.id}', false)">No la cumplí</button>
+        </div>
+      </div>
+    `;
+  } else {
+    html += `<p class="loading mono">Generando misión...</p>`;
+  }
+
+  if(history.length){
+    html += `<div class="log-section"><h2 class="mono">Registro</h2>`;
+    history.forEach(m => {
+      const statusClass = m.status === 'done' ? 'status-done' : 'status-failed';
+      const statusLabel = m.status === 'done' ? 'Cumplida' : 'Fallida';
+      html += `
+        <div class="log-entry">
+          <span class="lt">${m.title}</span>
+          <span class="ld mono ${statusClass}">${statusLabel} · ${fmtDate(m.createdAt)}</span>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+async function boot(){
+  document.getElementById('content').innerHTML = '<p class="loading mono">Cargando...</p>';
+  let prefill = localStorage.getItem(LAST_EMAIL_KEY) || '';
+  render();
+  if(prefill){
+    const emailInput = document.getElementById('email-input');
+    if(emailInput) emailInput.value = prefill;
+  }
+}
+
+boot();
+</script>
